@@ -10,7 +10,8 @@ namespace MinimalSudokuGen
 {
     public class Puzzle 
     {
-        //A Puzzle is an object representing a single Sudoku 9x9 array of either integers from 1-9 or a blank spot (represented by 0)
+        //A Puzzle is an object representing a single Sudoku 9x9 array of
+        //either integers from 1-9 or a blank spot (represented by 0)
 
         public int[,] values;
 
@@ -174,8 +175,9 @@ namespace MinimalSudokuGen
             return point;
         }
 
-        //A simplified version of findAllSolutions that uses the same basic logic but ends operation once more than one solution is found.
-        //This is more efficient than using findAllSolution.Count() when we just want to know whether a puzzle has exactly one unique solution.
+        //A simplified version of findAllSolutions that uses the same basic logic but ends 
+        //operation once more than one solution is found. This is more efficient than using 
+        //findAllSolution.Count() when we just want to know whether a puzzle has exactly one unique solution.
         public List<Puzzle> isSolutionUniqueHelper()
         {
             List<Puzzle> solutions = new List<Puzzle>();
