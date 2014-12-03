@@ -334,18 +334,14 @@ namespace MinimalSudokuGen
                 Puzzle firstElement = branchesLeftToEval.ElementAt(0);
                 List<Puzzle> solutionsOfFirstElement = firstElement.findAllSolutions();
 
-                if (solutionsOfFirstElement.Count == 0)
+                if (solutionsOfFirstElement.Count != 0)
                 {
-                    //If the first possible entry into the next empty slot results in no solutions, then remove that 
-                    //from the list of possible entries
-                    branchesLeftToEval.Remove(firstElement);
-                }
-                else
-                {
-                    //Otherwise, append all the solutions found with that possibility to the ones we find from the rest of
-                    //the possible entries
+                    //If the branch we just found all solutions for had some solutions in it, append
+                    //those to the list of solutions
                     solutions = solutions.Concat(solutionsOfFirstElement).ToList();
-                    branchesLeftToEval.Remove(firstElement);
+                }
+                //We've already exhausted all solutions achievable by searching firstElement, so remove it
+                branchesLeftToEval.Remove(firstElement);
                 }
             }
         }
