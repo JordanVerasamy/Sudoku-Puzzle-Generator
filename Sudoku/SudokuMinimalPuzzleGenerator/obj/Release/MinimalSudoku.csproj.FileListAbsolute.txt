@@ -1,0 +1,5 @@
+\\tiberius\home\Jordan.Verasamy\My Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\bin\Release\SudokuMinimalPuzzleGenerator.exe.config
+\\tiberius\home\Jordan.Verasamy\My Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\bin\Release\SudokuMinimalPuzzleGenerator.exe
+\\tiberius\home\Jordan.Verasamy\My Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\bin\Release\SudokuMinimalPuzzleGenerator.pdb
+\\tiberius\home\Jordan.Verasamy\My Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\obj\Release\SudokuMinimalPuzzleGenerator.exe
+\\tiberius\home\Jordan.Verasamy\My Documents\Visual Studio 2013\Projects\ConsoleApplication2\ConsoleApplication2\obj\Release\SudokuMinimalPuzzleGenerator.pdb
