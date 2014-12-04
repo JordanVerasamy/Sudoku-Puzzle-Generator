@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace MinimalSudokuGen
 {
-    public class Puzzle 
+    public class Puzzle
     {
         //A Puzzle is an object representing a single Sudoku 9x9 array of
         //either integers from 1-9 or a blank spot (represented by 0)
@@ -53,7 +53,7 @@ namespace MinimalSudokuGen
             }
         }
 
-        //Divide the 9x9 grid into a 2D array a, each a[i,j] being a Box. This returns a[i,j]
+        //Suppose I divide the 9x9 grid into a 3x3 array a, each a[i,j] being a 3x3 Box. This returns a[i,j]
         public Box getBox(int x, int y)
         {
             Box box = new Box();
@@ -69,7 +69,7 @@ namespace MinimalSudokuGen
             return box;
         }
 
-        // Returns the y-th row in the puzzle
+        //Returns the y-th row in the puzzle
         public Line getRow(int y)
         {
             Line row = new Line();
@@ -129,7 +129,8 @@ namespace MinimalSudokuGen
                 {
                     String line = sr.ReadToEnd();
 
-                    string[] lines = Regex.Split(line, "\r\n");
+                    //seems to flipflop between whether \r\n or \n works. no idea what's going on there
+                    string[] lines = Regex.Split(line, "\n");
 
                     for (int i = 0; i < 9; i++)
                     {
@@ -152,7 +153,6 @@ namespace MinimalSudokuGen
         #endregion
 
         #region Algorithm Helpers
-        
         //Returns a Point representing the next slot in the puzzle which is blank, or returns a Point
         //with coordinates (-1, -1) if the puzzle is full (see the Point constructor)
         public Point getNextEmptySlot()
@@ -175,8 +175,8 @@ namespace MinimalSudokuGen
             return point;
         }
 
-        //A simplified version of findAllSolutions that uses the same basic logic but ends 
-        //operation once more than one solution is found. This is more efficient than using 
+        //A simplified version of findAllSolutions (used as a helper for isSolutionUnique) that uses the same 
+        //basic logic but ends operation once more than one solution is found. This is more efficient than using 
         //findAllSolution.Count() when we just want to know whether a puzzle has exactly one unique solution.
         public List<Puzzle> isSolutionUniqueHelper()
         {
@@ -239,7 +239,6 @@ namespace MinimalSudokuGen
 
                 if (reducedPuzzle.isSolutionUnique())
                 {
-                    reducedPuzzle.print();
                     return reducedPuzzle;
                 }
             }
@@ -261,7 +260,6 @@ namespace MinimalSudokuGen
         #endregion
 
         #region Algorithm Functions
-
         //Tries to add each number from 1-9 into the next empty slot, returns a list of all 
         //puzzles which have done this successfully without placing duplicates in a row, column, or box
         public List<Puzzle> getNeighbours()
@@ -299,7 +297,7 @@ namespace MinimalSudokuGen
             return neighbours;
         }
 
-        // Returns true if and only if this puzzle has exactly one solution
+        //Returns true if and only if this puzzle has exactly one solution
         public Boolean isSolutionUnique()
         {
             if (this.isSolutionUniqueHelper().Count == 1)
@@ -342,7 +340,6 @@ namespace MinimalSudokuGen
                 }
                 //We've already exhausted all solutions achievable by searching firstElement, so remove it
                 branchesLeftToEval.Remove(firstElement);
-                }
             }
         }
 
@@ -382,13 +379,17 @@ namespace MinimalSudokuGen
         {
             Boolean isSolutionUnique = this.isSolutionUnique();
 
+            //If this puzzle is already non-unique, just exit
             if (!isSolutionUnique)
             {
                 System.Console.WriteLine("This isn't unique!");
                 return null;
             }
 
+            //Tracks a list of potential candidates. i.e. the list of nodes the current node connects to
             List<Puzzle> listOfCandidates = new List<Puzzle>();
+
+            //Represents the current node
             Puzzle initialPuzzle = new Puzzle();
 
             for (int i = 0; i < 9; i++)
@@ -399,13 +400,17 @@ namespace MinimalSudokuGen
                 }
             }
 
+            //Initially, the only node we see is the beginning puzzle
             listOfCandidates.Add(initialPuzzle);
 
             do
             {
+                //Main logic loop
+
                 int len = listOfCandidates.Count;
                 for (int i = 0; i < len; i++)
                 {
+                    //listOfCandidates.Count is constantly decreasing in length, so accessing listOfCandidates.ElementAt(i) is dangerous
                     if (i >= listOfCandidates.Count)
                     {
                         break;
@@ -417,12 +422,14 @@ namespace MinimalSudokuGen
                     {
                         for (int x = 0; x < 9; x++)
                         {
+                            //Check every location on the puzzle we're looking at to see if we can reduce it without making it non-unique
                             Puzzle nextPuzzle = candidate.findReducedPuzzle(x, y);
 
                             if (nextPuzzle != null)
                             {
                                 if (!nextPuzzle.isContained(listOfCandidates))
                                 {
+                                    //If we found a reduced non-unique non-duplicate version of the current puzzle, then add it to the list of candidates
                                     listOfCandidates.Add(nextPuzzle);
                                 }
                             }
@@ -431,12 +438,18 @@ namespace MinimalSudokuGen
 
                     if (listOfCandidates.Count > 1)
                     {
+                        //Now we've added every node that this node connects to that is farther from the root 
+                        //(i.e. has less numbers given),so we don't need this node anymore
                         listOfCandidates.Remove(candidate);
                     }
-
+                    //We're done with that candidate, move on to the next one in listOfCandidates
                 }
 
-            } while (listOfCandidates.Count > 1);
+                //We went through all the elements in listOfCandidates from before, but now that list has changed.
+                // -If there's more than one candidate puzzle left, then re-execute the for loop with the remaining candidates
+                // -If there's only one candidate puzzle left, exit and return that. It lasted through the most removals 
+                //  of numbers without being non-unique, so it must be the minimal puzzle
+            } while (!(listOfCandidates.Count == 1 && listOfCandidates.ElementAt(0).isSolutionUnique()));
 
             return listOfCandidates.ElementAt(0);
 

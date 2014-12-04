@@ -13,7 +13,8 @@ namespace MinimalSudokuGen
             Puzzle p = new Puzzle();
 
             //Consumes a puzzle from an input text file
-            p.pullFromTextFile("input_minimal1.txt");
+            p.pullFromTextFile("input_almost_minimal.txt");
+            Console.WriteLine("Initial puzzle:\n");
             p.print();
 
             //Prints the minimal puzzle
